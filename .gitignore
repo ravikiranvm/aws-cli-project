@@ -2,3 +2,4 @@ resources.json
 ec2-keypair.pem
 tmp.1732.json
 .DS_Store
+test.sh
