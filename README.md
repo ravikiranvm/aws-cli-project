@@ -4,7 +4,7 @@ This project automates the provisioning and management of AWS resources using Ba
 
 ## Project Architecture
 
-![alt text](architecture_diagram.jpeg)
+![alt text](architecture_daigram.jpeg)
 
 ## Project Structure
 
