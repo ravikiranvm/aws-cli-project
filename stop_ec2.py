@@ -7,9 +7,9 @@ def lambda_handler(event, context):
         ec2_client = boto3.client('ec2', region_name='ap-south-1')
 
         # Fetch instance ID from environment variable
-        instance_id = os.environ.get('INSTANCE_ID')
+        instance_id = event.get('instance_id')
         if not instance_id:
-            raise ValueError("Environment variable 'INSTANCE_ID' is not set.")
+            raise ValueError("Instance ID is missing from the event payload")
 
         # Stop the instance
         ec2_client.stop_instances(InstanceIds=[instance_id])

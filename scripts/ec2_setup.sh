@@ -3,30 +3,8 @@
 # Exit on errors
 set -e
 
-# Add debuggin mode
-set -x
-
-# File contianing resources details
-RESOURCE_FILE="resources.json"
-
-# Function to extract values from json file
-function get_from_json() {
-    local key=$1
-
-    jq -r --arg key "$key" '.[$key]' "$RESOURCE_FILE"
-}
-
-# Function to write json to the resources file
-function write_to_json() {
-    local key=$1
-    local value=$2
-
-    if [ ! -f "$RESOURCE_FILE" ]; then
-        echo "{}" > $RESOURCE_FILE
-    fi
-
-    jq --arg key "$key" --arg value "$value" '.[$key] = $value' "$RESOURCE_FILE" > tmp.$$.json && mv tmp.$$.json "$RESOURCE_FILE"
-}
+# Import functions from common.sh file
+source ./scripts/common.sh
 
 # Retrieve resource ids from resources.json file
 VPC_ID=$(get_from_json "vpc_id")
@@ -43,9 +21,15 @@ fi
 KEY_NAME="ec2-keypair"
 KEY_FILE="${KEY_NAME}.pem"
 
-echo "Creating a new key-pair..."
-aws ec2 create-key-pair --key-name "$KEY_NAME" --query 'KeyMaterial' --output text > "$KEY_FILE"
-chmod 400 "$KEY_FILE"
+# Check if the key pair exists
+if aws ec2 describe-key-pairs --key-names "$KEY_NAME" > /dev/null 2>&1; then
+    echo "Key pair '$KEY_NAME' already exists. Skipping creation."
+else
+    echo "Creating a new key pair..."
+    aws ec2 create-key-pair --key-name "$KEY_NAME" --query "KeyMaterial" --output text > "$KEY_FILE"
+    chmod 400 ec2-keypair.pem
+    echo "Key pair created and saved to $KEY_FILE"
+fi
 echo "Key pair created and saved to $KEY_FILE"
 write_to_json "key_name" "$KEY_NAME"
 write_to_json "key_file" "$KEY_FILE"

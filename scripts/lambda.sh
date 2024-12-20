@@ -1,16 +1,9 @@
 #!/bin/bash
 
 set -e
-set -x
 
-# File containing resource details
-RESOURCE_FILE="resources.json"
-
-# Function to retrieve resource details from the resources.json file
-get_from_json() {
-    local key=$1
-    jq -r --arg key "$key" '.[$key]' "$RESOURCE_FILE"
-}
+# Import functions from common.sh file
+source ./scripts/common.sh
 
 # Retrieve resourcese details
 INSTANCE_ID=$(get_from_json "ec2_instance_id")
@@ -31,6 +24,7 @@ if [[ -z "$ROLE_EXISTS" ]]; then
     aws iam put-role-policy --role-name "$ROLE_NAME" --policy-name "EC2AccessPolicy" --policy-document file://./templates/ec2_access_policy.json 
 fi 
 
+sleep 30 # Let the role be available for the lambda function
 
 # Create a function to deploy lambda functions
 deploy_lambda() {
@@ -55,6 +49,7 @@ deploy_lambda() {
             --zip-file "fileb://$handler_file.zip" \
             --description "$description" > /dev/null 2>&1
         rm -f "$handler_file.zip"
+        echo "Function: $function_name created"
     else
         echo "$function_name already exists. Skipping creation."
     fi

@@ -3,20 +3,8 @@
 # Exit on errors
 set -e
 
-# File to store outputs, i.e resources details
-RESOURCE_FILE="resources.json"
-
-# Function to write data to resources.json file
-function write_to_json() {
-    local key=$1
-    local value=$2
-
-    if [ ! -f "$RESOURCE_FILE" ]; then
-        echo "{}" > $RESOURCE_FILE
-    fi
-
-    jq --arg key "$key" --arg value "$value" '.[$key] = $value' "$RESOURCE_FILE" > tmp.$$.json && mv tmp.$$.json "$RESOURCE_FILE"
-}
+# Import functions from common.sh file
+source ./scripts/common.sh
 
 # Create VPC
 echo "Creating VPC..."
@@ -47,9 +35,10 @@ ROUTE_TABLE_ID=$(aws ec2 create-route-table --vpc-id $VPC_ID --query "RouteTable
 # Create a route
 aws ec2 create-route --route-table-id $ROUTE_TABLE_ID --destination-cidr-block 0.0.0.0/0 --gateway-id $IGW_ID
 # Associate the route table to subnet
-aws ec2 associate-route-table --route-table-id $ROUTE_TABLE_ID --subnet-id $SUBNET_ID 
+ROUTE_TABLE_ASSOCIATION_ID=$(aws ec2 associate-route-table --route-table-id $ROUTE_TABLE_ID --subnet-id $SUBNET_ID --query "AssociationId" --output text)
 echo "Route Table Created: $ROUTE_TABLE_ID"
 write_to_json "route_table_id" "$ROUTE_TABLE_ID"
+write_to_json "route_table_association_id" "$ROUTE_TABLE_ASSOCIATION_ID"
 
 # Create security group
 echo "Creating security group..."
