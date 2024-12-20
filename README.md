@@ -2,6 +2,10 @@
 
 This project automates the provisioning and management of AWS resources using Bash scripts and AWS CLI. It includes networking, EC2 setup, Lambda functions, EventBridge rules, and cleanup scripts.
 
+## Project Architecture
+
+![alt text](architecture_diagram.jpeg)
+
 ## Project Structure
 
 ```plaintext
