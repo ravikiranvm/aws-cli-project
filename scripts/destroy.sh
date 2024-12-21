@@ -33,11 +33,17 @@ aws lambda delete-function \
 #Terminating EC2 instance
 echo -e "${GREEN}Stopping EC2 instance: ${RED}$ec2_id...${NC}"
 aws ec2 stop-instances --instance-ids $ec2_id --region ap-south-1
+echo "${YELLOW}Please wait...${NC}"
+
+sleep 60 # Let the EC2 move to stopped state
 
 echo -e "${GREEN}Terminating EC2 instance: ${RED}$ec2_id...${NC}"
 aws ec2 terminate-instances --instance-ids $ec2_id --region ap-south-1
 delete_from_json "ec2_instance_id"
 delete_from_json "ec2_public_ip"
+echo "${YELLOW}Please wait...${NC}"
+
+sleep 60 # Let the EC2 move to termintaed state
 
 # Deleting IGW
 echo -e "${GREEN}Detaching IGW: ${RED}$igw...${NC}"
@@ -61,6 +67,7 @@ echo -e "${GREEN}Deleting Subnet: ${RED}$subnet...${NC}"
 aws ec2 delete-subnet --subnet-id $subnet
 
 delete_from_json "subnet_id"
+sleep 10 #Wait for subnet to be deleted
 
 # Deleting VPC
 echo -e "${GREEN}Deleting VPC: ${RED}$vpc...${NC}"

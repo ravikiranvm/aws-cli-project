@@ -43,8 +43,8 @@ write_to_json "route_table_association_id" "$ROUTE_TABLE_ASSOCIATION_ID"
 # Create security group
 echo "Creating security group..."
 SECURITY_GROUP_ID=$(aws ec2 create-security-group --group-name web-sg --description "SG for Web Server" --vpc-id $VPC_ID --query "GroupId" --output text)
-aws ec2 authorize-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 22 --cidr "49.205.105.182/32"
-aws ec2 authorize-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 80 --cidr "0.0.0.0/0"
+aws ec2 authorize-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 22 --cidr "49.205.105.182/32" # For SSH Access
+aws ec2 authorize-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 80 --cidr "0.0.0.0/0" #HTTP Access
 echo "Security group created: $SECURITY_GROUP_ID"
 write_to_json "security_group_id" "$SECURITY_GROUP_ID"
 
