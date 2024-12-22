@@ -108,6 +108,9 @@ This script reads `resources.json` to identify and remove the resources.
 - Modify scripts as needed to customize resource configurations.
 - If any script fails, debug using the output messages or logs.
 
+## Pending Tasks:
+- Github Actions for CI/CD
+
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
