@@ -1,6 +1,6 @@
 # AWS CLI Automation Project
 
-This project automates the provisioning and management of AWS resources using Bash scripts and AWS CLI. It includes networking, EC2 setup, Lambda functions, EventBridge rules, and cleanup scripts.
+This project automates AWS resource provisioning and management using Bash scripts and AWS CLI. It sets up a VPC, subnet, security group, and an EC2 instance hosting a simple NGINX server with a static webpage. The project also deploys two Lambda functions and schedules them using EventBridge rules to automatically start and stop the EC2 instance daily.
 
 ## Project Architecture
 
